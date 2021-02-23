@@ -15,7 +15,7 @@ m2 = Matrix [[1, 2, 3, 4],
             [1, 2, 3, 4]]
 
 
-data Tensor a = Vec a | Matrix a | Tensor [Tensor a] deriving (Eq, Show)
+data Matrix a = Vec a | Matrix a deriving (Eq, Show)
 
 
 -- VECTOR OPERATIONS --
@@ -29,8 +29,7 @@ infixr 6 `hadamard`
     --show Vec = "Vec"
     --show Matrix = "Matrix"
 
-
-stringify :: Tensor a -> [a] -> [a]
+stringify :: Matrix a -> [a] -> [a]
 stringify _ [] = []
 stringify t (x:xs) = [x] ++ stringify t xs
 
@@ -58,6 +57,8 @@ hadamard :: (Num a) => [a] -> [a] -> [a]
 -- |Take the dot product of two vectors 
 dot :: (Num a) => [a] -> [a] -> a 
 [] `dot` [] = 0
+_ `dot` [] = 0
+[] `dot` _ = 0
 (x:xs) `dot` (y:ys) = (x * y) + xs `dot` ys
 
 -- |Create a matrix of size (m, n) with random doubles from 0 to 1
