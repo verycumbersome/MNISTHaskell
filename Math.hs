@@ -34,6 +34,7 @@ stringify _ [] = []
 stringify t (x:xs) = [x] ++ stringify t xs
 
 
+-- VECTOR OPERATIONS --
 -- |Add two vectors
 (.+) :: (Num a) => [a] -> [a] -> [a] 
 [] .+ [] = []
