@@ -2,6 +2,13 @@ module Main where
 
 import Math
 
+import Codec.Compression.GZip (decompress)
+import qualified Data.ByteString.Lazy as BS
+import Data.Functor
+import System.Random
+
+render n = let s = " .:oO@" in s !! (fromIntegral n * length s `div` 256)
+
 euler = exp 1 
 
 -- Define nueral net
@@ -38,8 +45,20 @@ mul :: Num a => [[a]] -> a -> [[a]]
 mul x y = [[i * y | i <- j] | j <- x]
 
 main = do
-    let  x2 = softmax (sigmoid [col (layer w1 x1) 0]) -- Col layer transposes matrix upright
-    let  out = softmax (sigmoid [col (layer w2 x2) 0])
+  s <- decompress <$> BS.readFile "data/train-images-idx3-ubyte.gz"
+  l <- decompress <$> BS.readFile "data/train-labels-idx1-ubyte.gz"
+  let n = (random newStdGen (0, 60000))
+  --let n = n - (n `mod` 28)
+  --putStr . unlines $
+    --[(render . BS.index s . (n*28^2 + 16 + r*28 +)) <$> [0..27] | r <- [0..27]]
+  --print $ BS.index l (n + 8)
 
-    print(x2)
-    print(out)
+  let x2 = softmax (sigmoid [col (layer w1 x1) 0]) -- Col layer transposes matrix upright
+  let out = softmax (sigmoid [col (layer w2 x2) 0])
+
+  print([[BS.index s (n + (x*28^2 + y*28)) | y <- [0..27]] | x <- [0..27]])
+  --print(BS.index s 4)
+
+    --print(x2)
+    --print(out)
+
